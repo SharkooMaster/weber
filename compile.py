@@ -2,13 +2,7 @@ import json
 import glob
 from bs4 import BeautifulSoup as bs
 
-import sys
-import time
-import logging
-from watchdog.observers import Observer
-from watchdog.events import LoggingEventHandler
-
-class compiler(LoggingEventHandler):
+class compiler():
     configPath = "./config.json"
     config = None
     
@@ -28,18 +22,6 @@ class compiler(LoggingEventHandler):
         self.compiledPages = self.parseFiles_html(self.pageFiles)
         self.build()
 
-
-    def on_any_event(self,event):
-        print("####")
-        LoggingEventHandler()
-
-        self.componentFilePaths = self.getFromDir(self.config["html"], self.config["gateway"])
-        self.componentFiles = self.getFiles(self.componentFilePaths)
-    
-        self.pageFiles = self.getFiles(self.config["gateway"])
-        self.compiledPages = self.parseFiles_html(self.pageFiles)
-        self.build()
-    
     def getFromDir(self, p, m):
         ret = []
         for i in range(len(p)):
@@ -95,19 +77,3 @@ class compiler(LoggingEventHandler):
                 f.write(self.compiledPages[i])
 
 x = compiler()
-
-
-logging.basicConfig(level=logging.INFO,
-        format='%(asctime)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S')
-
-eventHandler = x
-observer = Observer()
-observer.schedule(eventHandler, ".", recursive=True)
-observer.start()
-try:
-    while True:
-        time.sleep(1)
-finally: 
-    observer.stop()
-    observer.join()
