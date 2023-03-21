@@ -1,0 +1,12 @@
+{
+	"buildPath": "./build",
+	"html": [
+		"./src"
+	],
+	"gateway": [
+		"./src/index.html"
+	],
+	"vars": {
+		"ip": "192.192.192.1"
+	}
+}
