@@ -2,7 +2,13 @@ import json
 import glob
 from bs4 import BeautifulSoup as bs
 
-class compiler:
+import sys
+import time
+import logging
+from watchdog.observers import Observer
+from watchdog.events import LoggingEventHandler
+
+class compiler(LoggingEventHandler):
     configPath = "./config.json"
     config = None
     
@@ -14,13 +20,23 @@ class compiler:
     
     def __init__(self):
         self.config = json.loads(open(self.configPath, "r").read())
+
         self.componentFilePaths = self.getFromDir(self.config["html"], self.config["gateway"])
         self.componentFiles = self.getFiles(self.componentFilePaths)
-        print(self.componentFilePaths)
-        print(self.componentFiles)
     
         self.pageFiles = self.getFiles(self.config["gateway"])
-        print(self.pageFiles)
+        self.compiledPages = self.parseFiles_html(self.pageFiles)
+        self.build()
+
+
+    def dispatch(self,event):
+        print("####")
+        LoggingEventHandler()
+
+        self.componentFilePaths = self.getFromDir(self.config["html"], self.config["gateway"])
+        self.componentFiles = self.getFiles(self.componentFilePaths)
+    
+        self.pageFiles = self.getFiles(self.config["gateway"])
         self.compiledPages = self.parseFiles_html(self.pageFiles)
         self.build()
     
@@ -52,12 +68,9 @@ class compiler:
                 end = i.find("?>")
     
                 component = i[start:end]
-                print(component)
                 compArgs = component.split(" ")[1:]
-                print(compArgs)
     
                 compName = compArgs[0]
-                print(compName)
     
                 compFile = ""
                 for j in range(len(self.componentFilePaths)):
@@ -68,16 +81,11 @@ class compiler:
                             if(k != ''):
                                 _tag = k.split("=")[0]
                                 _val = k.split("=")[1]
-                                print(_tag)
                                 if("{" + _tag + "}" in compFile):
                                     compFile = compFile.replace("{" + _tag + "}", _val)
                         break
                 i = i[:start] + compFile + i[end + 2:]
-
                 i = bs(i, features="html.parser").prettify()
-
-
-        print(compiledPageFiles)
         return compiledPageFiles
     
     def build(self):
@@ -86,4 +94,21 @@ class compiler:
             _n = self.config["gateway"][i].split("/")
             with open(f'{self.config["buildPath"]}/{_n[len(_n)-1]}', "w") as f:
                 f.write(self.compiledPages[i])
+
 x = compiler()
+
+
+logging.basicConfig(level=logging.INFO,
+        format='%(asctime)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S')
+
+eventHandler = x
+observer = Observer()
+observer.schedule(eventHandler, ".", recursive=True)
+observer.start()
+try:
+    while True:
+        time.sleep(1)
+finally: 
+    observer.stop()
+    observer.join()
