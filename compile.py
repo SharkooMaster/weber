@@ -29,7 +29,7 @@ class compiler(LoggingEventHandler):
         self.build()
 
 
-    def dispatch(self,event):
+    def on_any_event(self,event):
         print("####")
         LoggingEventHandler()
 
