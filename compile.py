@@ -43,6 +43,9 @@ class compiler:
         for i in p:
             while True:
                 if(i.find("<?") == -1):
+                    for x in self.config["vars"]:
+                        if "{" + x + "}" in i:
+                            i = i.replace("{"+x+"}",self.config["vars"][x])
                     compiledPageFiles.append(i)
                     break
                 start = i.find("<?")
@@ -71,14 +74,14 @@ class compiler:
                         break
                 i = i[:start] + compFile + i[end + 2:]
 
-                for x in self.config["vars"]:
-                    if "{" + x + "}" in i:
-                        i = i.replace("{"+x+"}",self.config["vars"][x])
                 i = bs(i, features="html.parser").prettify()
+
+
         print(compiledPageFiles)
         return compiledPageFiles
     
     def build(self):
+
         for i in range(len(self.config["gateway"])):
             _n = self.config["gateway"][i].split("/")
             with open(f'{self.config["buildPath"]}/{_n[len(_n)-1]}', "w") as f:
