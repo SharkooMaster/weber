@@ -11,19 +11,19 @@ from watchdog.events import LoggingEventHandler
 class compiler(LoggingEventHandler):
     configPath = "./config.json"
     config = None
-    
+
     componentFilePaths = []
     componentFiles = []
-    
+
     pageFiles = []
     compiledPages = []
-    
+
     def __init__(self):
         self.config = json.loads(open(self.configPath, "r").read())
 
         self.componentFilePaths = self.getFromDir(self.config["html"], self.config["gateway"])
         self.componentFiles = self.getFiles(self.componentFilePaths)
-    
+
         self.pageFiles = self.getFiles(self.config["gateway"])
         self.compiledPages = self.parseFiles_html(self.pageFiles)
         self.build()
@@ -35,11 +35,11 @@ class compiler(LoggingEventHandler):
 
         self.componentFilePaths = self.getFromDir(self.config["html"], self.config["gateway"])
         self.componentFiles = self.getFiles(self.componentFilePaths)
-    
+
         self.pageFiles = self.getFiles(self.config["gateway"])
         self.compiledPages = self.parseFiles_html(self.pageFiles)
         self.build()
-    
+
     def getFromDir(self, p, m):
         ret = []
         for i in range(len(p)):
@@ -47,13 +47,13 @@ class compiler(LoggingEventHandler):
                 if files not in m:
                     ret.append(files)
         return ret
-    
+
     def getFiles(self, p):
         ret = []
         for i in p:
             ret.append(open(i,"r").read())
         return ret
-    
+
     def parseFiles_html(self, p):
         compiledPageFiles = []
         for i in p:
@@ -66,12 +66,12 @@ class compiler(LoggingEventHandler):
                     break
                 start = i.find("<?")
                 end = i.find("?>")
-    
+
                 component = i[start:end]
                 compArgs = component.split(" ")[1:]
-    
+
                 compName = compArgs[0]
-    
+
                 compFile = ""
                 for j in range(len(self.componentFilePaths)):
                     if(compName in self.componentFilePaths[j]):
@@ -87,7 +87,7 @@ class compiler(LoggingEventHandler):
                 i = i[:start] + compFile + i[end + 2:]
                 i = bs(i, features="html.parser").prettify()
         return compiledPageFiles
-    
+
     def build(self):
 
         for i in range(len(self.config["gateway"])):
@@ -109,6 +109,6 @@ observer.start()
 try:
     while True:
         time.sleep(1)
-finally: 
+finally:
     observer.stop()
     observer.join()
