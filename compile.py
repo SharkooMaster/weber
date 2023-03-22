@@ -1,10 +1,10 @@
-#!/bin/python
-import json
+import os
 import glob
+import json
+import shutil
 import asyncio
 from watcher import watcher, Logger
 from flagser import *
-import os
 from bs4 import BeautifulSoup as bs
 
 logger = Logger()
@@ -22,6 +22,9 @@ class compiler:
 
     compiledPages = []
 
+    cssFilePaths = []
+    cssInjections = []
+
     def __init__(self, config={}):
         if config == {}:
             self.config = json.loads(open(self.configPath, "r").read())
@@ -29,7 +32,8 @@ class compiler:
             self.config = config
 
         self.cssFilePaths = self.getFromDir(self.config["cssPath"], [], "/*.css")
-        self.setCssLinks()
+        self.cssInjections = self.setCssLinks()
+        self.syncCss()
 
         self.componentFilePaths = self.getFromDir(self.config["html"], self.config["pages"], "/*.html")
         self.componentFiles = self.getFiles(self.componentFilePaths)
@@ -40,6 +44,10 @@ class compiler:
 
 
     def refresh(self):
+        self.cssFilePaths = self.getFromDir(self.config["cssPath"], [], "/*.css")
+        self.cssInjections = self.setCssLinks()
+        self.syncCss()
+
         self.componentFilePaths = self.getFromDir(self.config["html"], self.config["pages"], "/*.html")
         self.componentFiles = self.getFiles(self.componentFilePaths)
 
@@ -97,6 +105,11 @@ class compiler:
                                     compFile = compFile.replace("{" + _tag + "}", _val)
                         break
                 i = i[:start] + compFile + i[end + 2:]
+
+                headStart = i.find("<head>")
+                for q in self.cssInjections:
+                    i = i[:headStart + 6] + q + i[headStart + 6 + len(q): ]
+                    print(len(q))
                 i = bs(i, features="html.parser").prettify()
         return compiledPageFiles
 
@@ -105,8 +118,12 @@ class compiler:
         _link = f"<link rel='stylesheet' href='"
         for i in self.cssFilePaths:
             _i = i.split("/")
-            ret.append(f"{_link}{_i[len(_i)-1]}'>")
-        print(ret)
+            ret.append(f"{_link}{_i[len(_i)-1]}' />")
+        return ret
+    
+    def syncCss(self):
+        for fname in self.cssFilePaths:
+            shutil.copy2(fname, self.config["buildPath"])
 
     def build(self):
 
