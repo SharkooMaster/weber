@@ -6,6 +6,10 @@
 	"html": [
 		"./src"
 	],
+	"cssPath":
+	[
+		"./src/css"
+	],
 	"pages": [
 		"./src/index.html"
 	],

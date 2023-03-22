@@ -17,36 +17,45 @@ class compiler:
 
     compiledPages = []
 
+    cssFilePaths = []
+
     def __init__(self):
         self.config = json.loads(open(self.configPath, "r").read())
 
-        self.componentFilePaths = self.getFromDir(self.config["html"], self.config["pages"])
+        self.cssFilePaths = self.getFromDir(self.config["cssPath"], [], "/*.css")
+        self.setCssLinks()
+
+        self.componentFilePaths = self.getFromDir(self.config["html"], self.config["pages"], "/*.html")
         self.componentFiles = self.getFiles(self.componentFilePaths)
 
-        self.pageFilePaths = self.getFromDir(self.config["html"], self.componentFilePaths)
+        self.pageFilePaths = self.getFromDir(self.config["html"], self.componentFilePaths, "/*.html")
         self.pageFiles = self.getFiles(self.config["pages"])
         self.compiledPages = self.parseFiles_html(self.pageFiles)
+
         self.build()
 
         _w = watcher()
         _w.start(edited=lambda: self.refresh(), new_file=lambda: self.refresh(), ignore=self.config["autoRefresh"]["ignore"])
 
     def refresh(self):
-        self.componentFilePaths = self.getFromDir(self.config["html"], self.config["pages"])
+        self.componentFilePaths = self.getFromDir(self.config["html"], self.config["pages"], "/*.html")
         self.componentFiles = self.getFiles(self.componentFilePaths)
 
         self.pageFiles = self.getFiles(self.config["pages"])
         self.compiledPages = self.parseFiles_html(self.pageFiles)
         self.build()
 
-    def getFromDir(self, p, m):
+    def getFromDir(self, p, m, f):
         ret = []
         for i in range(len(p)):
-            for files in glob.glob(f"{p[i]}/*.html"):
+            for files in glob.glob(f"{p[i]}{f}"):
                 files = files.replace("\\","/")
-                for j in m:
-                    if j not in files:
-                        ret.append(files)
+                if(len(m) != 0):
+                    for j in m:
+                        if j not in files:
+                            ret.append(files)
+                else:
+                    ret.append(files)
         return ret
 
     def getFiles(self, p):
@@ -88,6 +97,14 @@ class compiler:
                 i = i[:start] + compFile + i[end + 2:]
                 i = bs(i, features="html.parser").prettify()
         return compiledPageFiles
+
+    def setCssLinks(self):
+        ret = []
+        _link = f"<link rel='stylesheet' href='"
+        for i in self.cssFilePaths:
+            _i = i.split("/")
+            ret.append(f"{_link}{_i[len(_i)-1]}'>")
+        print(ret)
 
     def build(self):
 
