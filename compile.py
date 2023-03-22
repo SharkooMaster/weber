@@ -1,6 +1,7 @@
 import json
 import glob
 from bs4 import BeautifulSoup as bs
+from watcher import watcher
 
 class compiler():
     configPath = "./config.json"
@@ -15,6 +16,17 @@ class compiler():
     def __init__(self):
         self.config = json.loads(open(self.configPath, "r").read())
 
+        self.componentFilePaths = self.getFromDir(self.config["html"], self.config["gateway"])
+        self.componentFiles = self.getFiles(self.componentFilePaths)
+
+        self.pageFiles = self.getFiles(self.config["gateway"])
+        self.compiledPages = self.parseFiles_html(self.pageFiles)
+        self.build()
+
+        _w = watcher()
+        _w.start(edited=lambda: self.refresh(), new_file=lambda: self.refresh(), ignore=self.config["autoRefresh"]["ignore"])
+
+    def refresh(self):
         self.componentFilePaths = self.getFromDir(self.config["html"], self.config["gateway"])
         self.componentFiles = self.getFiles(self.componentFilePaths)
 
@@ -76,5 +88,6 @@ class compiler():
             _n = self.config["gateway"][i].split("/")
             with open(f'{self.config["buildPath"]}/{_n[len(_n)-1]}', "w") as f:
                 f.write(self.compiledPages[i])
+        print("COMPILER::LOG -> Build succeeded")
 
 x = compiler()

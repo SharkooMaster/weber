@@ -8,5 +8,8 @@
 	],
 	"vars": {
 		"ip": "192.192.192.1"
+	},
+	"autoRefresh": {
+		"ignore" : ["./build", "./.git", ".py", ".json", "./LICENSE"]
 	}
 }
