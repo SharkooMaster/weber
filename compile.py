@@ -25,6 +25,8 @@ class compiler:
     cssFilePaths = []
     cssInjections = []
 
+    jsFilePaths = []
+
     def __init__(self, config={}):
         if config == {}:
             self.config = json.loads(open(self.configPath, "r").read())
@@ -33,7 +35,10 @@ class compiler:
 
         self.cssFilePaths = self.getFromDir(self.config["cssPath"], [], "/*.css")
         self.cssInjections = self.setCssLinks()
-        self.syncCss()
+        self.syncFilesToBuild(self.cssFilePaths)
+
+        self.jsFilePaths = self.getFromDir(self.config["jsPath"], [], "/*.js")
+        self.syncFilesToBuild(self.jsFilePaths)
 
         self.componentFilePaths = self.getFromDir(self.config["html"], self.config["pages"], "/*.html")
         self.componentFiles = self.getFiles(self.componentFilePaths)
@@ -46,7 +51,10 @@ class compiler:
     def refresh(self):
         self.cssFilePaths = self.getFromDir(self.config["cssPath"], [], "/*.css")
         self.cssInjections = self.setCssLinks()
-        self.syncCss()
+        self.syncFilesToBuild(self.cssFilePaths)
+
+        self.jsFilePaths = self.getFromDir(self.config["jsPath"], [], "/*.js")
+        self.syncFilesToBuild(self.jsFilePaths)
 
         self.componentFilePaths = self.getFromDir(self.config["html"], self.config["pages"], "/*.html")
         self.componentFiles = self.getFiles(self.componentFilePaths)
@@ -121,8 +129,8 @@ class compiler:
             ret.append(f"{_link}{_i[len(_i)-1]}' />")
         return ret
     
-    def syncCss(self):
-        for fname in self.cssFilePaths:
+    def syncFilesToBuild(self, f):
+        for fname in f:
             shutil.copy2(fname, self.config["buildPath"])
 
     def build(self):
