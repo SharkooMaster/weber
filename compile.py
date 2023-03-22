@@ -1,3 +1,4 @@
+#!/bin/python
 import json
 import glob
 import asyncio
