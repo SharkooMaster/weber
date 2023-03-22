@@ -3,6 +3,7 @@ import glob
 from bs4 import BeautifulSoup as bs
 from watcher import watcher
 from flagser import *
+import os
 
 class compiler():
     configPath = "./config.json"
@@ -91,6 +92,8 @@ class compiler():
                 f.write(self.compiledPages[i])
         print("COMPILER::LOG -> Build succeeded")
 
+
+# deffault config before user changes things with flags
 compileConfig = {
 	"buildPath": "./build",
 	"html": [
@@ -106,25 +109,16 @@ compileConfig = {
 		"ignore" : ["./build", "./.git", ".py", ".json", "./LICENSE"]
 	}
 }
- 
 
-
-def auto(args):
-    x = compiler()
-    _w = watcher()
-    _w.start(edited=lambda: x.refresh(), new_file=lambda: x.refresh(), ignore=x.config["autoRefresh"]["ignore"])
-
-def comp(args):
-    global compileConfig
-    x = compiler(compileConfig)
-    x.refresh()
+#--setters--#
+#add variables to 
 def set_variables(args):
     global compileConfig
     for arg in args:
         key = arg.split("=")[0]
         value = arg.split("=")[1]
         compileConfig["vars"][key] = value
-
+#sets srx
 def setsrc(args):
     global compileConfig
     compileConfig["html"] = args
@@ -141,11 +135,14 @@ setters = FlagManager([
 ])
 setters.check()
 
+#--runners--#
 def createConfig(args):
     global compileConfig
     if "example" in args:
-        os.mkdir("./src")
-        os.mkdir("./build")
+        #creates dirs
+        os.mkdir("src")
+        os.mkdir("build")
+        #writes a index
         f = open('./src/index.html',"w")
         f.write('''
         <DOCTYPE! html>
@@ -162,25 +159,36 @@ def createConfig(args):
         </html>
         ''')
         f.close()
+
         f = open("./src/navbar.html", "w") 
         f.write('''
-       <div class="bg-gray-400 w-full h-[80px] flex flex-row items-center justify-center">
-	        <p>{title}</p>
+        <div class="bg-gray-400 w-full h-[80px] flex flex-row items-center justify-center">
+            <p>{title}</p>
         </div>
         ''')
         f.close()
 
+    #creates a config file
     f = open('./config.json',"w")
     f.write(json.dumps(
         compileConfig,
     indent=4
-    ))
-    
-    
+    )) 
+ 
+#npm start
+def auto(args):
+    x = compiler()
+    _w = watcher()
+    _w.start(edited=lambda: x.refresh(), new_file=lambda: x.refresh(), ignore=x.config["autoRefresh"]["ignore"])
+# compiles
+def comp(args):
+    global compileConfig
+    x = compiler(compileConfig)
+    x.refresh()
 
 runners = FlagManager([
     Flag("compile", "--compile", "compiles files from folder specifed after flag to a index.html", comp),
-    Flag("init", "", "creates a config file ", createConfig),
+    Flag("init", "", "creates a config file. followed på example will create a example project", createConfig),
     Flag("start", "", "", auto),
 ])
 runners.check()
