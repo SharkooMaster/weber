@@ -143,32 +143,32 @@ setters.check()
 
 def createConfig(args):
     global compileConfig
-    if "example" in args:
-        os.mkdir("./src")
-        os.mkdir("./build")
-        f = open('./src/index.html',"w")
-        f.write('''
-        <DOCTYPE! html>
-        <html>
-            <head>
-                <script src="https://cdn.tailwindcss.com"></script>
-            </head>
+    print("what DA FACK")
+    os.mkdir("/home/spy/dev/python/weber/example/src")
+    os.makedirs("build")
+    f = open('./src/index.html',"w")
+    f.write('''
+    <DOCTYPE! html>
+    <html>
+        <head>
+            <script src="https://cdn.tailwindcss.com"></script>
+        </head>
 
-            <body>
-                <? navbar title=thi ?>
-                {ip}
-                <h1>What is the point</h1>
-            </body>
-        </html>
-        ''')
-        f.close()
-        f = open("./src/navbar.html", "w") 
-        f.write('''
-       <div class="bg-gray-400 w-full h-[80px] flex flex-row items-center justify-center">
-	        <p>{title}</p>
-        </div>
-        ''')
-        f.close()
+        <body>
+            <? navbar title=thi ?>
+            {ip}
+            <h1>What is the point</h1>
+        </body>
+    </html>
+    ''')
+    f.close()
+    f = open("./src/navbar.html", "w") 
+    f.write('''
+    div class="bg-gray-400 w-full h-[80px] flex flex-row items-center justify-center">
+	    <p>{title}</p>
+    </div>
+    ''')
+    f.close()
 
     f = open('./config.json',"w")
     f.write(json.dumps(
