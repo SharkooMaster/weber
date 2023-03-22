@@ -1,18 +1,22 @@
 import json
 import glob
-from bs4 import BeautifulSoup as bs
+import asyncio
 from watcher import watcher
 from flagser import *
 import os
+from websockets import serve
+from bs4 import BeautifulSoup as bs
 
-class compiler():
+class compiler:
     configPath = "./config.json"
     config = None
 
     componentFilePaths = []
     componentFiles = []
 
+    pageFilePaths = []
     pageFiles = []
+
     compiledPages = []
 
     def __init__(self, config={}):
@@ -21,18 +25,19 @@ class compiler():
         else:
             self.config = config
 
-        self.componentFilePaths = self.getFromDir(self.config["html"], self.config["gateway"])
+        self.componentFilePaths = self.getFromDir(self.config["html"], self.config["pages"])
         self.componentFiles = self.getFiles(self.componentFilePaths)
 
-        self.pageFiles = self.getFiles(self.config["gateway"])
+        self.pageFilePaths = self.getFromDir(self.config["html"], self.componentFilePaths)
+        self.pageFiles = self.getFiles(self.config["pages"])
         self.compiledPages = self.parseFiles_html(self.pageFiles)
 
 
     def refresh(self):
-        self.componentFilePaths = self.getFromDir(self.config["html"], self.config["gateway"])
+        self.componentFilePaths = self.getFromDir(self.config["html"], self.config["pages"])
         self.componentFiles = self.getFiles(self.componentFilePaths)
 
-        self.pageFiles = self.getFiles(self.config["gateway"])
+        self.pageFiles = self.getFiles(self.config["pages"])
         self.compiledPages = self.parseFiles_html(self.pageFiles)
         self.build()
 
@@ -40,8 +45,10 @@ class compiler():
         ret = []
         for i in range(len(p)):
             for files in glob.glob(f"{p[i]}/*.html"):
-                if files not in m:
-                    ret.append(files)
+                files = files.replace("\\","/")
+                for j in m:
+                    if j not in files:
+                        ret.append(files)
         return ret
 
     def getFiles(self, p):
@@ -86,9 +93,11 @@ class compiler():
 
     def build(self):
 
-        for i in range(len(self.config["gateway"])):
-            _n = self.config["gateway"][i].split("/")
+        for i in range(len(self.config["pages"])):
+            _n = self.config["pages"][i].split("/")
             with open(f'{self.config["buildPath"]}/{_n[len(_n)-1]}', "w") as f:
+                self.compiledPages[i] = self.compiledPages[i].replace('<doctype! html="">', "<DOCTYPE! html>")
+                self.compiledPages[i] = self.compiledPages[i].replace('</doctype!>', "")
                 f.write(self.compiledPages[i])
         print("COMPILER::LOG -> Build succeeded")
 
