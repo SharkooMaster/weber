@@ -1,14 +1,16 @@
 import json
 import glob
 import asyncio
-from watcher import watcher
+from watcher import watcher, Logger
 from flagser import *
 import os
-from websockets import serve
 from bs4 import BeautifulSoup as bs
 
+logger = Logger()
+
 class compiler:
-    configPath = "./config.json"
+    configPath = os.getcwd()+"/config.json"
+
     config = None
 
     componentFilePaths = []
@@ -104,15 +106,19 @@ class compiler:
 
 # deffault config before user changes things with flags
 compileConfig = {
+	"localhost": "localhost",
+	"port": 8000,
 	"buildPath": "./build",
+	"root": "index.html",
 	"html": [
 		"./src"
 	],
-	"gateway": [
+	"pages": [
 		"./src/index.html"
 	],
 	"vars": {
-        "ip":"isk"
+		"ip": "192.192.192.1",
+		"affe": "https://media.discordapp.net/attachments/749271911988592690/1088069665051377684/IMG_20220920_152149.jpg?width=810&height=1080"
 	},
 	"autoRefresh": {
 		"ignore" : ["./build", "./.git", ".py", ".json", "./LICENSE"]
@@ -154,18 +160,19 @@ def createConfig(args):
         #writes a index
         f = open('./src/index.html',"w")
         f.write('''
-        <DOCTYPE! html>
-        <html>
-            <head>
-                <script src="https://cdn.tailwindcss.com"></script>
-            </head>
+<DOCTYPE! html>
+<html>
+    <head>
+        <meta http-equiv="refresh" content="2">
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
 
-            <body>
-                <? navbar title=thi ?>
-                {ip}
-                <h1>What is the point</h1>
-            </body>
-        </html>
+    <body>
+        <? navbar title=thi ?>
+        {ip}
+        <h1>What is the point</h1>
+    </body>
+</html>
         ''')
         f.close()
 
@@ -186,6 +193,7 @@ def createConfig(args):
  
 #npm start
 def auto(args):
+    logger.log("Starts auto refresh")
     x = compiler()
     _w = watcher()
     _w.start(edited=lambda: x.refresh(), new_file=lambda: x.refresh(), ignore=x.config["autoRefresh"]["ignore"])
