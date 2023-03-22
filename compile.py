@@ -109,7 +109,7 @@ class compiler:
                 headStart = i.find("<head>")
                 for q in self.cssInjections:
                     i = i[:headStart + 6] + q + i[headStart + 6 + len(q): ]
-                    print(len(q))
+                
                 i = bs(i, features="html.parser").prettify()
         return compiledPageFiles
 
