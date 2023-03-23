@@ -21,6 +21,7 @@ function navPage(a)
 	for (let index = 0; index < paths.length; index++) {
 		if(a == index){
 			document.getElementById(paths[index]).style.display = "block";
+			window.history.pushState({id:"100"}, "Page", "/"+paths[index])
 		}
 		else{
 			document.getElementById(paths[index]).style.display = "none";
