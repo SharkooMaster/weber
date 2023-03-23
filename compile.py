@@ -35,10 +35,10 @@ class compiler:
 
         self.cssFilePaths = self.getFromDir(self.config["cssPath"], [], "/*.css")
         self.cssInjections = self.setCssLinks()
-        self.syncFilesToBuild(self.cssFilePaths)
+        self.syncFilesToBuild(self.cssFilePaths, ".css")
 
         self.jsFilePaths = self.getFromDir(self.config["jsPath"], [], "/*.js")
-        self.syncFilesToBuild(self.jsFilePaths)
+        self.syncFilesToBuild(self.jsFilePaths, ".js")
 
         self.componentFilePaths = self.getFromDir(self.config["html"], self.config["pages"], "/*.html")
         self.componentFiles = self.getFiles(self.componentFilePaths)
@@ -51,10 +51,10 @@ class compiler:
     def refresh(self):
         self.cssFilePaths = self.getFromDir(self.config["cssPath"], [], "/*.css")
         self.cssInjections = self.setCssLinks()
-        self.syncFilesToBuild(self.cssFilePaths)
+        self.syncFilesToBuild(self.cssFilePaths, ".css")
 
         self.jsFilePaths = self.getFromDir(self.config["jsPath"], [], "/*.js")
-        self.syncFilesToBuild(self.jsFilePaths)
+        self.syncFilesToBuild(self.jsFilePaths, ".js")
 
         self.componentFilePaths = self.getFromDir(self.config["html"], self.config["pages"], "/*.html")
         self.componentFiles = self.getFiles(self.componentFilePaths)
@@ -113,12 +113,15 @@ class compiler:
                                     compFile = compFile.replace("{" + _tag + "}", _val)
                         break
                 i = i[:start] + compFile + i[end + 2:]
-
-                headStart = i.find("<head>")
-                for q in self.cssInjections:
-                    i = i[:headStart + 6] + q + i[headStart + 6 + len(q): ]
-                
-                i = bs(i, features="html.parser").prettify()
+        
+        for w in range(len(compiledPageFiles)):
+            headStart = compiledPageFiles[w].find("<head>")
+            offset = headStart + 6
+            for q in self.cssInjections:
+                compiledPageFiles[w] = compiledPageFiles[w][:offset] + q + compiledPageFiles[w][offset: ]
+                print(compiledPageFiles[w])
+                offset += len(q)
+            compiledPageFiles[w] = bs(compiledPageFiles[w], features="html.parser").prettify()
         return compiledPageFiles
 
     def setCssLinks(self):
@@ -129,7 +132,11 @@ class compiler:
             ret.append(f"{_link}{_i[len(_i)-1]}' />")
         return ret
     
-    def syncFilesToBuild(self, f):
+    def syncFilesToBuild(self, f, ext):
+        for item in os.listdir(self.config["buildPath"]):
+            if item.endswith(ext):
+                os.remove(os.path.join(self.config["buildPath"], item))
+        
         for fname in f:
             shutil.copy2(fname, self.config["buildPath"])
 

@@ -19,7 +19,7 @@
 	],
 	"vars": {
 		"ip": "192.192.192.1",
-		"affe": "https://media.discordapp.net/attachments/749271911988592690/1088069665051377684/IMG_20220920_152149.jpg?width=810&height=1080"
+		"hamIcon": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/2048px-Hamburger_icon.svg.png"
 	},
 	"autoRefresh": {
 		"ignore" : ["./build", "./.git", ".py", ".json", "./LICENSE"]

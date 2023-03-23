@@ -1,17 +1,47 @@
-<DOCTYPE! html>
- <html>
-  <head>
-   <link href="index.css" rel="stylesheet"/>
-   <script src="https://cdn.tailwindcss.com">
-   </script>
-  </head>
-  <body>
-   <div class="bg-black w-full h-[80px] flex flex-row items-center justify-start px-12">
-    <p class="text-white text-3xl">
-     Alfred
-    </p>
+<!DOCTYPE html>
+<html>
+ <head>
+  <link href="index.css" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+ </head>
+ <body id="body">
+  <div class="shadow-md w-full h-[80px] flex flex-row items-center justify-start px-12 hidden md:flex">
+   <p class="text-black text-3xl">
+    Weber
+   </p>
+   <div class="w-full h-full flex flex-row items-center justify-end gap-4">
+    <div class="h-full px-4 flex items-center justify-center flex-wrap hover:bg-[#d9d9d9] cursor-pointer" onclick="navPage(0)">
+     Home
+    </div>
+    <div class="h-full px-4 flex items-center justify-center flex-wrap hover:bg-[#d9d9d9] cursor-pointer" onclick="navPage(1)">
+     About us
+    </div>
    </div>
-   <img class="w-[400px] h-[600px]" src="https://media.discordapp.net/attachments/749271911988592690/1088069665051377684/IMG_20220920_152149.jpg?width=810&height=1080"/>
-   <img class="w-[400px] h-[600px]" src="https://media.discordapp.net/attachments/749271911988592690/1088069665051377684/IMG_20220920_152149.jpg?width=810&height=1080"/>
-  </body>
- </html>
+  </div>
+  <div class="shadow-md w-full h-[80px] flex flex-row items-center justify-start px-4 block md:hidden">
+   <p class="text-black text-3xl">
+    Weber
+   </p>
+   <div class="w-full h-full flex flex-row items-center justify-end" onclick="mobNav()">
+    <img class="h-[45px] justify-self-end" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/2048px-Hamburger_icon.svg.png"/>
+   </div>
+  </div>
+  <div class="w-full flex flex-col items-center justify-center gap-4 absolute left-0 right-0 bg-slate-200" id="mobNavView" style="display: none;">
+   <div class="w-full text-lg flex items-center justify-center flex-wrap hover:bg-[#d9d9d9] cursor-pointer" onclick="navPage(0)">
+    Home
+   </div>
+   <div class="w-full text-lg flex items-center justify-center flex-wrap hover:bg-[#d9d9d9] cursor-pointer" onclick="navPage(1)">
+    About us
+   </div>
+  </div>
+  <div id="Home">
+   This is home page
+  </div>
+  <div id="About">
+   This is about page
+  </div>
+  <script src="index.js">
+  </script>
+ </body>
+</html>
