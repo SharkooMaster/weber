@@ -1,0 +1,17 @@
+
+<div class="shadow-md w-full h-[80px] flex flex-row items-center justify-start px-4 block md:hidden">
+	<p class="text-black text-3xl">{title}</p>
+
+	<div class="w-full h-full flex flex-row items-center justify-end" onclick="mobNav()">
+		<img src="{hamIcon}" class="h-[45px] justify-self-end" />
+	</div>
+</div>
+<div class="w-full flex flex-col items-center justify-center gap-4 absolute left-0 right-0 bg-slate-200" id="mobNavView" style="display: none;">
+	<div class="w-full text-lg flex items-center justify-center flex-wrap hover:bg-[#d9d9d9] cursor-pointer" onclick="navPage(0)">
+		Home
+	</div>
+	<div class="w-full text-lg flex items-center justify-center flex-wrap hover:bg-[#d9d9d9] cursor-pointer" onclick="navPage(1)">
+		About us
+	</div>
+</div>
+        

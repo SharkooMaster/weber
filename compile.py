@@ -3,6 +3,7 @@ import glob
 import json
 import shutil
 import asyncio
+from generateFiles import createConfig
 from watcher import watcher, Logger
 from flagser import *
 from bs4 import BeautifulSoup as bs
@@ -113,7 +114,7 @@ class compiler:
                                     compFile = compFile.replace("{" + _tag + "}", _val)
                         break
                 i = i[:start] + compFile + i[end + 2:]
-        
+
         for w in range(len(compiledPageFiles)):
             headStart = compiledPageFiles[w].find("<head>")
             offset = headStart + 6
@@ -131,12 +132,12 @@ class compiler:
             _i = i.split("/")
             ret.append(f"{_link}{_i[len(_i)-1]}' />")
         return ret
-    
+
     def syncFilesToBuild(self, f, ext):
         for item in os.listdir(self.config["buildPath"]):
             if item.endswith(ext):
                 os.remove(os.path.join(self.config["buildPath"], item))
-        
+
         for fname in f:
             shutil.copy2(fname, self.config["buildPath"])
 
@@ -160,12 +161,21 @@ compileConfig = {
 	"html": [
 		"./src"
 	],
+	"cssPath":
+	[
+		"./src/css"
+	],
+	"jsPath":
+	[
+		"./src/js"
+	],
 	"pages": [
 		"./src/index.html"
 	],
 	"vars": {
-		"ip": "192.192.192.1",
-		"affe": "https://media.discordapp.net/attachments/749271911988592690/1088069665051377684/IMG_20220920_152149.jpg?width=810&height=1080"
+		"logo": "GFX/Logo.svg",
+		"logoDark": "GFX/LogoDark.svg",
+		"hamIcon": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/2048px-Hamburger_icon.svg.png"
 	},
 	"autoRefresh": {
 		"ignore" : ["./build", "./.git", ".py", ".json", "./LICENSE"]
@@ -173,7 +183,7 @@ compileConfig = {
 }
 
 #--setters--#
-#add variables to 
+#add variables to
 def set_variables(args):
     global compileConfig
     for arg in args:
@@ -198,52 +208,13 @@ setters = FlagManager([
 setters.check()
 
 #--runners--#
-def createConfig(args):
-    global compileConfig
-    if "example" in args:
-        #creates dirs
-        os.mkdir("src")
-        os.mkdir("build")
-        #writes a index
-        f = open('./src/index.html',"w")
-        f.write('''
-<DOCTYPE! html>
-<html>
-    <head>
-        <meta http-equiv="refresh" content="2">
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
 
-    <body>
-        <? navbar title=thi ?>
-        {ip}
-        <h1>What is the point</h1>
-    </body>
-</html>
-        ''')
-        f.close()
-
-        f = open("./src/navbar.html", "w") 
-        f.write('''
-        <div class="bg-gray-400 w-full h-[80px] flex flex-row items-center justify-center">
-            <p>{title}</p>
-        </div>
-        ''')
-        f.close()
-
-    #creates a config file
-    f = open('./config.json',"w")
-    f.write(json.dumps(
-        compileConfig,
-    indent=4
-    )) 
- 
 #npm start
 def auto(args):
     logger.log("Starts auto refresh")
     x = compiler()
-    _w = watcher()
-    _w.start(edited=lambda: x.refresh(), new_file=lambda: x.refresh(), ignore=x.config["autoRefresh"]["ignore"])
+    w = watcher()
+    w.start(edited=lambda: x.refresh(), new_file=lambda: x.refresh(), ignore=x.config["autoRefresh"]["ignore"])
 # compiles
 def comp(args):
     global compileConfig
@@ -252,7 +223,7 @@ def comp(args):
 
 runners = FlagManager([
     Flag("compile", "--compile", "compiles files from folder specifed after flag to a index.html", comp),
-    Flag("init", "", "creates a config file. followed på example will create a example project", createConfig),
+    Flag("init", "", "creates a config file. followed på example will create a example project", lambda args : createConfig(args,compileConfig)),
     Flag("start", "", "", auto),
 ])
 runners.check()
