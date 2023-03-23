@@ -7,9 +7,7 @@
  </head>
  <body id="body">
   <div class="shadow-md w-full h-[80px] flex flex-row items-center justify-start px-12 hidden md:flex">
-   <p class="text-black text-3xl">
-    Weber
-   </p>
+   <img class="h-[50px]" src="GFX/LogoDark.svg"/>
    <div class="w-full h-full flex flex-row items-center justify-end gap-4">
     <div class="h-full px-4 flex items-center justify-center flex-wrap hover:bg-[#d9d9d9] cursor-pointer" onclick="navPage(0)">
      Home
@@ -36,7 +34,20 @@
    </div>
   </div>
   <div id="Home">
-   This is home page
+   <div class="flex flex-col w-full py-8 items-center px-2">
+    <img class="h-[120px]" src="GFX/LogoDark.svg"/>
+    <p class="text-3xl mt-8 text-center">
+     Welcome to Weber docs!🔥
+    </p>
+    <p class="text-xl mt-8 text-center">
+     Weber provides html beginners a simple gateway into understanding larger frameworks such as React Js, Vue Js, etc...
+     <br/>
+     To get started, click
+     <b class="text-blue-400 underline decoration-2 cursor-pointer" onclick="navPage(1)">
+      here
+     </b>
+    </p>
+   </div>
   </div>
   <div id="About">
    This is about page
