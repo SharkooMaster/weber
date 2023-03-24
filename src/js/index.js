@@ -17,13 +17,6 @@ function mobNav()
 }
 
 let activeIndex = 0;
-//activeIndex = parseInt(new URL(window.location).searchParams.get("id"));
-
-if(new URL(window.location).searchParams.has("id"))
-{
-	activeIndex = parseInt(new URL(window.location).searchParams.get("id"));
-}
-
 addEventListener("popstate", (event)=>{
 	for (let index = 0; index < paths.length; index++) {
 		document.getElementById(paths[index]).style.display = "none";
@@ -35,10 +28,11 @@ addEventListener("popstate", (event)=>{
 	}
 })
 
+
 window.onunload = (e)=>
 {
 	console.log('test')
-	window.location = "/build/index.html?id=" + activeIndex.toString()
+	window.location = "http://127.0.0.1:5500/build"
 }
 
 function navPage(a)
@@ -48,7 +42,7 @@ function navPage(a)
 		console.log(index)
 		if(a == index){
 			document.getElementById(paths[index]).style.display = "block";
-			window.history.replaceState({id: paths[index]}, paths[index], "/"+paths[index])
+			window.history.pushState({id: paths[index]}, paths[index], "/"+paths[index])
 		}
 		else{
 			document.getElementById(paths[index]).style.display = "none";
@@ -56,4 +50,4 @@ function navPage(a)
 	}
 	
 }
-navPage(activeIndex)
+navPage(0)
