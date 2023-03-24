@@ -79,5 +79,5 @@ function navPage(a)
 	}
 }
 
-navPage(0)
+navPage(1)
 toggleDark()

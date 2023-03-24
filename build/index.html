@@ -6,7 +6,7 @@
   </script>
  </head>
  <body id="body">
-  <div class="shadow-md w-full h-[80px] flex flex-row items-center justify-start px-12 hidden md:flex">
+  <div class="shadow-md w-full h-[80px] flex flex-row items-center justify-start px-12 hidden md:flex z-10">
    <img class="h-[50px]" src="GFX/LogoDark.svg"/>
    <div class="w-full h-full flex flex-row items-center justify-end gap-4">
     <div class="w-[60px] bg-slate-600 rounded-full grid justify-items-stretch" onclick="toggleBtn('toggle',toggleDark)">
@@ -65,12 +65,18 @@
     </div>
    </div>
   </div>
-  <div class="px-8" id="Docs">
-   <p class="text-[140px] font-thin text-slate-600">
-    Docs
-   </p>
+  <div class="flex flex-row" id="Docs">
+   <div class="w-[340px] h-screen flex flex-col flex-wrap items-start justify-start py-4 bg-slate-100 z-0 shadow-inner">
+    <div class="w-full bg-[#ED7BFF] px-8 py-2 rounded-r-full" gettingstarted")"="" onclick="console.log(">
+     <p class="text-slate-600">
+      gettingStarted
+     </p>
+    </div>
+   </div>
   </div>
   <script src="index.js">
+  </script>
+  <script src="docs.js">
   </script>
  </body>
 </html>
