@@ -1,9 +1,39 @@
 
 paths = 
 [
+	"Docs",
 	"Home",
-	"About"
 ];
+
+
+// Do not tinker with what's below, unless you know what it does
+
+function toggleBtn(id, f)
+{
+	let b = f()
+	if(b)
+	{
+		console.log("end")
+		document.getElementById(id).style = "justify-self: end"
+	}else{
+		console.log("start")
+		document.getElementById(id).style = "justify-self: start"
+	}
+}
+
+let darkmode = true
+function toggleDark()
+{
+	if(!darkmode)
+	{
+		document.getElementById("html").className += " dark "
+	}else{
+		document.getElementById("html").className = " "
+	}
+	darkmode = !darkmode;
+	console.log("darkmode: " + darkmode)
+	return darkmode
+}
 
 const navBarView_mobile = document.getElementById("mobNavView")
 function mobNav()
@@ -48,6 +78,7 @@ function navPage(a)
 			document.getElementById(paths[index]).style.display = "none";
 		}
 	}
-	
 }
+
 navPage(0)
+toggleDark()

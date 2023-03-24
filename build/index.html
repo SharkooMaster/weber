@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html id="html">
  <head>
   <link href="index.css" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com">
@@ -9,6 +9,10 @@
   <div class="shadow-md w-full h-[80px] flex flex-row items-center justify-start px-12 hidden md:flex">
    <img class="h-[50px]" src="GFX/LogoDark.svg"/>
    <div class="w-full h-full flex flex-row items-center justify-end gap-4">
+    <div class="w-[60px] bg-slate-600 rounded-full grid justify-items-stretch" onclick="toggleBtn('toggle',toggleDark)">
+     <div class="h-[20px] w-[20px] bg-slate-200 rounded-full" id="toggle">
+     </div>
+    </div>
     <div class="h-full px-4 flex items-center justify-center flex-wrap hover:bg-[#d9d9d9] cursor-pointer" onclick="navPage(0)">
      Home
     </div>
@@ -49,8 +53,10 @@
     </p>
    </div>
   </div>
-  <div id="About">
-   This is about page
+  <div class="px-8" id="Docs">
+   <p class="text-[140px] font-thin text-slate-600">
+    Docs
+   </p>
   </div>
   <script src="index.js">
   </script>
