@@ -4,7 +4,8 @@
 	"buildPath": "./build",
 	"root": "index.html",
 	"html": [
-		"./src"
+		"./src",
+		"./src/Components"
 	],
 	"cssPath":
 	[

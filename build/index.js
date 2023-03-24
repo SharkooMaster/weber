@@ -1,10 +1,9 @@
 
 paths = 
 [
-	"Docs",
 	"Home",
+	"Docs",
 ];
-
 
 // Do not tinker with what's below, unless you know what it does
 
